@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import cloudinary from 'cloudinary';
 
 import { app } from './app';
@@ -68,10 +69,11 @@ import { socketIOWrapper } from './socket-io-wrapper';
 
     await db.authenticate();
     await db.sync();
-    console.log('Conneted to MySQL');
+    console.log('Connected to MySQL');
 
-    const server = app.listen(3000, () =>
-      console.log('Listening on port 3000!')
+    const port = process.env.PORT || 4001;
+    const server = app.listen(port, () =>
+      console.log(`Listening on port ${port}!`)
     );
 
     socketIOWrapper.listen(server);

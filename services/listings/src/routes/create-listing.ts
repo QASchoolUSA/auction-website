@@ -48,44 +48,49 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    await db.transaction(async (transaction) => {
-      const { price, title, description, expiresAt } = req.body;
+    try {
+      await db.transaction(async (transaction) => {
+        const { price, title, description, expiresAt } = req.body;
 
-      // @ts-ignore
-      const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        eager: [
-          { width: 225, height: 225 },
-          { width: 1280, height: 1280 },
-        ],
-      });
+        // @ts-ignore
+        const result = await cloudinary.v2.uploader.upload(req.file.path, {
+          eager: [
+            { width: 225, height: 225 },
+            { width: 1280, height: 1280 },
+          ],
+        });
 
-      const listing = await Listing.create(
-        {
+        const listing = await Listing.create(
+          {
+            userId: req.currentUser.id,
+            startPrice: price,
+            currentPrice: price,
+            title,
+            description,
+            expiresAt,
+            imageId: result.public_id,
+            smallImage: result.eager[0].secure_url,
+            largeImage: result.eager[1].secure_url,
+          },
+          { transaction }
+        );
+
+        new ListingCreatedPublisher(natsWrapper.client).publish({
+          id: listing.id,
           userId: req.currentUser.id,
-          startPrice: price,
-          currentPrice: price,
+          slug: listing.slug,
           title,
-          description,
+          price,
           expiresAt,
-          imageId: result.public_id,
-          smallImage: result.eager[0].secure_url,
-          largeImage: result.eager[1].secure_url,
-        },
-        { transaction }
-      );
+          version: listing.version,
+        });
 
-      new ListingCreatedPublisher(natsWrapper.client).publish({
-        id: listing.id,
-        userId: req.currentUser.id,
-        slug: listing.slug,
-        title,
-        price,
-        expiresAt,
-        version: listing.version,
+        res.status(201).send(listing);
       });
-
-      res.status(201).send(listing);
-    });
+    } catch (err) {
+      console.error('Error creating listing:', err);
+      res.status(500).send({ errors: [{ message: 'Something went wrong creating listing', details: err.message }] });
+    }
   }
 );
 

@@ -6,10 +6,11 @@ import { Listing } from '../models';
 const router = express.Router();
 
 router.get('/api/listings/', async (req: Request, res: Response) => {
-  const search = req.query.search || '';
+  try {
+    const search = req.query.search || '';
 
-  const listings = search
-    ? await Listing.findAll({
+    const listings = search
+      ? await Listing.findAll({
         attributes: {
           include: [
             [
@@ -25,9 +26,13 @@ router.get('/api/listings/', async (req: Request, res: Response) => {
         ),
         order: [[Sequelize.literal('score'), 'DESC']],
       })
-    : await Listing.findAll();
+      : await Listing.findAll();
 
-  res.status(200).send(listings);
+    res.status(200).send(listings);
+  } catch (err) {
+    console.error('Error in GET /api/listings:', err);
+    res.status(500).send({ errors: [{ message: 'Something went wrong', details: err.message, stack: err.stack }] });
+  }
 });
 
 export { router as getListingsRouter };

@@ -1,7 +1,5 @@
-import styled from '@emotion/styled';
 import axios from 'axios';
 import React, { useContext, useState } from 'react';
-import xw from 'xwind/macro';
 
 import AppContext from '../context/app-context';
 import CloseIcon from './CloseIcon';
@@ -10,134 +8,6 @@ import Logo from './Logo';
 import NavbarTab from './NavbarTab';
 import SearchBar from './SearchBar';
 import DesktopUserMenu from './UserMenu';
-
-const StyledNavbar = styled.nav(xw`
-    bg-white 
-    shadow
-`);
-
-const StyledDesktopContentContainer = styled.div(xw`
-    max-w-7xl 
-    mx-auto 
-    px-2 
-    sm:px-4 
-    lg:px-8
-`);
-
-const StyledDesktopContent = styled.div(xw`
-    flex 
-    justify-between 
-    h-16
-`);
-
-const StyledDesktopNavigationTabsContainer = styled.div(xw`
-    flex 
-    px-2 
-    lg:px-0
-`);
-
-const StyledDesktopNavigationTabs = styled.div(xw`
-    hidden 
-    lg:ml-6 
-    lg:flex 
-    lg:space-x-8
-`);
-
-const StyledMobileHamburgerMenuContainer = styled.div(xw`
-    flex 
-    items-center 
-    lg:hidden
-`);
-
-const StyledMobileHamburgerMenuButton = styled.button(xw`
-    inline-flex 
-    items-center 
-    justify-center 
-    p-2 
-    rounded-md 
-    text-gray-400 
-    hover:text-gray-500 
-    hover:bg-gray-100 
-    focus:outline-none 
-    focus:ring-2 
-    focus:ring-inset 
-    focus:ring-indigo-500
-`);
-
-const StyledSpan = styled.span(xw`
-    sr-only
-`);
-
-const StyledNavbarButtonsContainer = styled.div(xw`
-    hidden 
-    lg:ml-4 
-    lg:flex 
-    lg:items-center
-`);
-
-const StyledMobileNavContainer = styled.div(xw`
-    lg:hidden
-`);
-
-const StyledMobileNavigationTabsContainer = styled.div(xw`
-    pt-2 
-    pb-3 
-    space-y-1
-`);
-
-const StyledInformationContainer = styled.div(xw`
-    ml-3
-`);
-
-const StyledProfileImgContainer = styled.div(xw`
-    flex-shrink-0
-`);
-
-const StyledProfileImg = styled.img(xw`
-    h-10 
-    w-10 
-    rounded-full
-`);
-
-const StyledName = styled.div(xw`
-    text-base 
-    font-medium 
-    text-gray-800
-`);
-
-const StyledEmail = styled.div(xw`
-    text-sm 
-    font-medium 
-    text-gray-500
-`);
-
-const StyledSignOutButton = styled.button(xw`
-    border-transparent 
-    text-gray-600 
-    hover:bg-gray-50 
-    hover:border-gray-300 
-    hover:text-gray-800 
-    block 
-    pl-3 
-    pr-4 
-    py-2 
-    border-l-4 
-    text-base 
-    font-medium
-`);
-
-const StyledMobileContent = styled.div(xw`
-    pt-4 
-    pb-3 
-    border-t 
-    border-gray-200
-`);
-
-const StyledProfileInformation = styled.div(xw`
-    flex 
-    items-center 
-    px-4
-`);
 
 const Navbar = () => {
   const {
@@ -150,68 +20,74 @@ const Navbar = () => {
     try {
       await axios.post('/api/auth/signout');
       setAuth({ isAuthenticated: false, currentUser: null });
-    } catch (err) {}
+    } catch (err) { }
   };
 
   return (
-    <StyledNavbar>
-      <StyledDesktopContentContainer>
-        <StyledDesktopContent>
-          <StyledDesktopNavigationTabsContainer>
+    <nav className="bg-white shadow">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+        <div className="flex justify-between h-16">
+          <div className="flex px-2 lg:px-0">
             <Logo />
-            <StyledDesktopNavigationTabs>
+            <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
               <NavbarTab href="/" name="Home" />
               <NavbarTab href="/listings" name="Browse Listings" />
               {isAuthenticated && (
                 <NavbarTab href="/sell" name="Sell an Item" />
               )}
-            </StyledDesktopNavigationTabs>
-          </StyledDesktopNavigationTabsContainer>
+            </div>
+          </div>
           <SearchBar />
-          <StyledMobileHamburgerMenuContainer>
-            <StyledMobileHamburgerMenuButton
+          <div className="flex items-center lg:hidden">
+            <button
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
               onClick={() => setShowMobileNav(!showMobileNav)}
               aria-expanded="false"
             >
-              <StyledSpan>Open main menu</StyledSpan>
+              <span className="sr-only">Open main menu</span>
               {showMobileNav ? <HamburgerMenuIcon /> : <CloseIcon />}
-            </StyledMobileHamburgerMenuButton>
-          </StyledMobileHamburgerMenuContainer>
+            </button>
+          </div>
           {isAuthenticated ? (
-            <StyledNavbarButtonsContainer>
+            <div className="hidden lg:ml-4 lg:flex lg:items-center">
               <DesktopUserMenu />
-            </StyledNavbarButtonsContainer>
+            </div>
           ) : (
-            <StyledDesktopNavigationTabs>
+            <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
               <NavbarTab href="/auth/signin" name="Sign in" />
               <NavbarTab href="/auth/signup" name="Sign up" />
-            </StyledDesktopNavigationTabs>
+            </div>
           )}
-        </StyledDesktopContent>
-      </StyledDesktopContentContainer>
+        </div>
+      </div>
       {showMobileNav && (
-        <StyledMobileNavContainer>
-          <StyledMobileNavigationTabsContainer>
+        <div className="lg:hidden">
+          <div className="pt-2 pb-3 space-y-1">
             <NavbarTab href="/" name="Home" />
             <NavbarTab href="/listings" name="Browse Listings" />
             {isAuthenticated && <NavbarTab href="/sell" name="Sell an Item" />}
-          </StyledMobileNavigationTabsContainer>
-          <StyledMobileContent>
+          </div>
+          <div className="pt-4 pb-3 border-t border-gray-200">
             {isAuthenticated && (
-              <StyledProfileInformation>
-                <StyledProfileImgContainer>
-                  <StyledProfileImg
+              <div className="flex items-center px-4">
+                <div className="flex-shrink-0">
+                  <img
+                    className="h-10 w-10 rounded-full"
                     src={currentUser.avatar}
                     alt="Your Profile Picture"
                   />
-                </StyledProfileImgContainer>
-                <StyledInformationContainer>
-                  <StyledName>{currentUser.name}</StyledName>
-                  <StyledEmail>{currentUser.email}</StyledEmail>
-                </StyledInformationContainer>
-              </StyledProfileInformation>
+                </div>
+                <div className="ml-3">
+                  <div className="text-base font-medium text-gray-800">
+                    {currentUser.name}
+                  </div>
+                  <div className="text-sm font-medium text-gray-500">
+                    {currentUser.email}
+                  </div>
+                </div>
+              </div>
             )}
-            <StyledMobileNavigationTabsContainer>
+            <div className="pt-2 pb-3 space-y-1">
               {isAuthenticated ? (
                 <>
                   <NavbarTab
@@ -220,9 +96,12 @@ const Navbar = () => {
                   />
                   <NavbarTab href="/dashboard/listings" name="Dashboard" />
                   <NavbarTab href="/settings/profile" name="Settings" />
-                  <StyledSignOutButton onClick={onClick}>
+                  <button
+                    className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+                    onClick={onClick}
+                  >
                     Sign out
-                  </StyledSignOutButton>
+                  </button>
                 </>
               ) : (
                 <>
@@ -230,11 +109,11 @@ const Navbar = () => {
                   <NavbarTab href="/auth/signup" name="Sign up" />
                 </>
               )}
-            </StyledMobileNavigationTabsContainer>
-          </StyledMobileContent>
-        </StyledMobileNavContainer>
+            </div>
+          </div>
+        </div>
       )}
-    </StyledNavbar>
+    </nav>
   );
 };
 

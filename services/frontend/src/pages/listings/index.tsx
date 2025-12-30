@@ -1,19 +1,9 @@
-import styled from '@emotion/styled';
 import Head from 'next/head';
 import React from 'react';
-import xw from 'xwind/macro';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import ListingCard from '../../components/ListingCard';
-
-const StyledListings = styled.div(xw`
-	py-3
-	flex 
-	flex-wrap 
-	-mx-2 
-	-mb-4
-`);
 
 const Listings = ({ listings, search }) => {
   return (
@@ -36,7 +26,7 @@ const Listings = ({ listings, search }) => {
             : `Found no results`}
         </p>
       </section>
-      <StyledListings>
+      <div className="py-3 flex flex-wrap -mx-2 -mb-4">
         {listings.map((listing, idx) => (
           <ListingCard
             key={idx}
@@ -47,17 +37,21 @@ const Listings = ({ listings, search }) => {
             slug={`/listings/${listing.slug}`}
           />
         ))}
-      </StyledListings>
+      </div>
     </>
   );
 };
 
 Listings.getInitialProps = async ({ query }, client) => {
-  const { data } = await client.get(
-    `/api/listings?search=${query.search || ''}`
-  );
-
-  return { listings: data || [], search: query.search };
+  try {
+    const { data } = await client.get(
+      `/api/listings?search=${query.search || ''}`
+    );
+    return { listings: data || [], search: query.search };
+  } catch (err) {
+    console.error('Error fetching listings:', err.response?.data || err.message);
+    return { listings: [], search: query.search };
+  }
 };
 
 export default Listings;

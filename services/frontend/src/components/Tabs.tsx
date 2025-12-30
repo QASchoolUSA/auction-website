@@ -1,22 +1,16 @@
-import styled from '@emotion/styled';
-import { FunctionComponent } from 'react';
-import xw from 'xwind/macro';
+import { FunctionComponent, ReactNode } from 'react';
 
-const StyledTabs = styled.div(xw`
-    border-b 
-    border-gray-200
-`);
+interface TabsProps {
+  children: ReactNode;
+}
 
-const StyledTabsNav = styled.nav(xw`
-    flex 
-    space-x-8
-`);
-
-const Tabs: FunctionComponent = ({ children }) => {
+const Tabs: FunctionComponent<TabsProps> = ({ children }) => {
   return (
-    <StyledTabs>
-      <StyledTabsNav aria-label="Tabs">{children}</StyledTabsNav>
-    </StyledTabs>
+    <div className="border-b border-gray-200">
+      <nav className="flex space-x-8" aria-label="Tabs">
+        {children}
+      </nav>
+    </div>
   );
 };
 

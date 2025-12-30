@@ -51,10 +51,11 @@ const BidDashboardTableRow = ({ bid, onDelete }) => {
         </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <Link href={`/listings/${bid.listing.slug}`}>
-          <a className="hover:underline text-sm text-gray-900">
-            {bid.listing.title}
-          </a>
+        <Link
+          href={`/listings/${bid.listing.slug}`}
+          className="hover:underline text-sm text-gray-900"
+        >
+          {bid.listing.title}
         </Link>
         <div className="text-sm text-gray-500">
           <Countdown expiresAt={bid.listing.expiresAt} />

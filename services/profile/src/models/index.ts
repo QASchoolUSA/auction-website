@@ -5,10 +5,15 @@ import { ProfileFactory } from './profile';
 const db =
   process.env.NODE_ENV == 'test'
     ? new Sequelize('sqlite::memory:')
-    : new Sequelize('mysql', 'root', process.env.MYSQL_ROOT_PASSWORD, {
-        host: 'listings-mysql-srv',
-        dialect: 'mysql',
-      });
+    : new Sequelize(process.env.PROFILE_MYSQL_URI!, {
+      dialect: 'mysql',
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
+      }
+    });
 
 const Profile = ProfileFactory(db);
 

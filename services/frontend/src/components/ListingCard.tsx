@@ -1,7 +1,5 @@
-import styled from '@emotion/styled';
 import Link from 'next/link';
 import React from 'react';
-import xw from 'xwind/macro';
 
 import { centsToDollars } from '../utils/cents-to-dollars';
 import Countdown from './Countdown';
@@ -14,52 +12,22 @@ interface IProps {
   smallImage: string;
 }
 
-const StyledListingCard = styled.div(xw`
-	w-full
-	lg:w-1/5
-  sm:w-1/3
-	px-2
-	mb-4
-`);
-
-const StyledCardContent = styled.div(xw`
-	rounded
-	shadow
-	cursor-pointer
-`);
-
-const TextWrapper = styled.div(xw`
-	p-3
-`);
-
-const StyledText = styled.a(xw`
-	text-indigo-600 
-	hover:underline
-`);
-
-const StyledPrice = styled.p(xw`
-	text-xl
-`);
-
-const StyledImg = styled.img(xw`
-	w-full	
-`);
-
 const ListingCard = ({ name, price, slug, smallImage, expiresAt }: IProps) => {
   return (
-    <StyledListingCard>
-      <Link href={slug}>
-        <StyledCardContent>
-          <StyledImg src={smallImage} alt={name} />
-          <TextWrapper>
-            <StyledText>
+    <div className="w-full lg:w-1/5 sm:w-1/3 px-2 mb-4">
+      <Link href={slug} legacyBehavior>
+        <div className="rounded shadow cursor-pointer">
+          <img className="w-full" src={smallImage} alt={name} />
+          <div className="p-3">
+            <a className="text-indigo-600 hover:underline">
+              <h3 className="text-lg font-semibold truncate mb-1">{name}</h3>
               <Countdown expiresAt={expiresAt} />
-            </StyledText>
-            <StyledPrice>{centsToDollars(price)}</StyledPrice>
-          </TextWrapper>
-        </StyledCardContent>
+            </a>
+            <p className="text-xl font-bold">{centsToDollars(price)}</p>
+          </div>
+        </div>
       </Link>
-    </StyledListingCard>
+    </div>
   );
 };
 

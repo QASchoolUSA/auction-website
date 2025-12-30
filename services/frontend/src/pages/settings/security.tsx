@@ -1,9 +1,7 @@
-import styled from '@emotion/styled';
 import axios from 'axios';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import React, { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
-import xw from 'xwind/macro';
 import * as Yup from 'yup';
 
 import Error from '../../components/ErrorMessage';
@@ -11,11 +9,9 @@ import SettingsBreadcrumbs from '../../components/SettingsBreadcrumbs';
 import SettingsTabs from '../../components/SettingsTabs';
 import AppContext from '../../context/app-context';
 
-const StyledErrorMessage = styled.div(xw`
-    text-sm
-    text-red-600
-    my-0.5
-`);
+const StyledErrorMessage = ({ children }: any) => (
+  <div className="text-sm text-red-600 my-0.5">{children}</div>
+);
 
 const validationSchema = Yup.object({
   oldPassword: Yup.string()

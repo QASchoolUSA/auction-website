@@ -1,63 +1,9 @@
-import styled from '@emotion/styled';
 import axios from 'axios';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
-import xw from 'xwind/macro';
 
 import AppContext from '../context/app-context';
 import ClickAwayButton from './ClickAwayButton';
-
-const StyledUserMenu = styled.div(xw`
-    ml-4 
-    relative 
-    flex-shrink-0
-`);
-
-const StyledButton = styled.button(xw`
-    bg-white 
-    rounded-full 
-    flex 
-    text-sm 
-    focus:outline-none 
-    focus:ring-2 
-    focus:ring-offset-2 
-    focus:ring-indigo-500
-`);
-
-const StyledSpan = styled.span(xw`
-    sr-only
-`);
-
-const StyledImg = styled.img(xw`
-    h-8 
-    w-8 
-    rounded-full
-`);
-
-const StyledLinksContainer = styled.div(xw`
-    origin-top-right 
-    absolute 
-    right-0 
-    mt-2 
-    w-48 
-    rounded-md 
-    shadow-lg 
-    py-1 
-    bg-white 
-    ring-1 
-    ring-black 
-    ring-opacity-5 
-    z-50
-`);
-
-const StyledAnchor = styled.a(xw`
-    block 
-    px-4 
-    py-2 
-    text-sm 
-    text-gray-700 
-    hover:bg-gray-100
-`);
 
 const UserMenu = () => {
   const {
@@ -76,7 +22,7 @@ const UserMenu = () => {
     try {
       await axios.post('/api/auth/signout');
       setAuth({ isAuthenticated: false, currentUser: null });
-    } catch (err) {}
+    } catch (err) { }
   };
 
   useEffect(() => {
@@ -88,39 +34,55 @@ const UserMenu = () => {
   }, []);
 
   return (
-    <StyledUserMenu>
-      <StyledButton
+    <div className="ml-4 relative flex-shrink-0">
+      <button
         id="user-menu"
         aria-haspopup="true"
         onClick={() => setShowUserMenu(!showUserMenu)}
+        className="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        <StyledSpan>Open user menu</StyledSpan>
-        <StyledImg src={currentUser.avatar} alt="Your Profile Picture" />
-      </StyledButton>
+        <span className="sr-only">Open user menu</span>
+        <img
+          className="h-8 w-8 rounded-full"
+          src={currentUser.avatar}
+          alt="Your Profile Picture"
+        />
+      </button>
       {showUserMenu && (
         <>
           <ClickAwayButton onClickAway={() => setShowUserMenu(false)} />
-          <StyledLinksContainer
+          <div
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="user-menu"
+            className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50"
           >
-            <Link href={`/profile/${currentUser.name}`}>
-              <StyledAnchor role="menuitem">Your Profile</StyledAnchor>
+            <Link href={`/profile/${currentUser.name}`} legacyBehavior>
+              <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                Your Profile
+              </a>
             </Link>
-            <Link href="/dashboard/listings">
-              <StyledAnchor role="menuitem">Dashboard</StyledAnchor>
+            <Link href="/dashboard/listings" legacyBehavior>
+              <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                Dashboard
+              </a>
             </Link>
-            <Link href="/settings/profile">
-              <StyledAnchor role="menuitem">Settings</StyledAnchor>
+            <Link href="/settings/profile" legacyBehavior>
+              <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                Settings
+              </a>
             </Link>
-            <StyledAnchor onClick={onClick} role="menuitem">
+            <a
+              onClick={onClick}
+              role="menuitem"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+            >
               Sign out
-            </StyledAnchor>
-          </StyledLinksContainer>
+            </a>
+          </div>
         </>
       )}
-    </StyledUserMenu>
+    </div>
   );
 };
 

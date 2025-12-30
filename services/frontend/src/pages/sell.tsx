@@ -1,11 +1,9 @@
-import styled from '@emotion/styled';
 import axios from 'axios';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import Head from 'next/head';
 import Router from 'next/router';
 import React, { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
-import xw from 'xwind/macro';
 import * as Yup from 'yup';
 
 import Breadcrumb from '../components/Breadcrumb';
@@ -15,15 +13,13 @@ import Error from '../components/ErrorMessage';
 import ImageUpload from '../components/ImageUpload';
 import AppContext from '../context/app-context';
 
-const StyledErrorMessage = styled.div(xw`
-    text-sm
-    text-red-600
-    my-0.5
-`);
+const StyledErrorMessage = (props: any) => (
+  <div className="text-sm text-red-600 my-0.5">{props.children}</div>
+);
 
 const validationSchema = Yup.object({
   title: Yup.string()
-    .max(15, 'Must be 15 characters or less')
+    .max(25, 'Must be 25 characters or less')
     .required('Required'),
   description: Yup.string()
     .max(5000, 'Must be 5000 characters or less')

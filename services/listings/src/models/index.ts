@@ -6,10 +6,15 @@ import { UserFactory } from './user';
 const db =
   process.env.NODE_ENV == 'test'
     ? new Sequelize('sqlite::memory:', { logging: false })
-    : new Sequelize('mysql', 'root', process.env.MYSQL_ROOT_PASSWORD, {
-        host: 'listings-mysql-srv',
-        dialect: 'mysql',
-      });
+    : new Sequelize(process.env.LISTINGS_MYSQL_URI || 'mysql://root:password@listings-mysql-srv:3306/listings', {
+      dialect: 'mysql',
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
+      }
+    });
 
 const Listing = ListingFactory(db);
 const User = UserFactory(db);

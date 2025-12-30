@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import axios from 'axios';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { NextPageContext } from 'next';
@@ -7,7 +6,6 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import io from 'socket.io-client';
-import xw from 'xwind/macro';
 import * as Yup from 'yup';
 
 import Breadcrumb from '../../components/Breadcrumb';
@@ -16,66 +14,9 @@ import Countdown from '../../components/Countdown';
 import Error from '../../components/ErrorMessage';
 import { centsToDollars } from '../../utils/cents-to-dollars';
 
-const StyledListing = styled.div(xw`
-	flex 
-	flex-wrap 
-	-mx-8 
-`);
-
-const StyledTextContent = styled.div(xw`
-	lg:w-1/2 
-	px-8 
-	lg:mt-0 
-  w-full
-	order-2 
-	lg:order-none
-`);
-
-const StyledTable = styled.table(xw`
-	w-full 
-	mb-6
-`);
-
-const StyledTableRow = styled.tr(xw`
-	border-t
-`);
-
-const StyledTableRowName = styled.td(xw`
-	py-3 
-	font-medium 
-	text-gray-700
-`);
-
-const StyledTableRowValue = styled.td(xw`
-	text-right 
-	max-w-2xl 
-	text-gray-500
-`);
-
-const StyledAnchorTableRowValue = styled.td(xw`
-	text-right 
-	max-w-2xl 
-  hover:underline
-  cursor-pointer
-	text-gray-500
-`);
-
-const StyledImgContainer = styled.div(xw`
-	lg:w-1/2 
-	px-8
-`);
-
-const StyledImg = styled.img(xw`
-	mb-4 
-	rounded 
-	shadow
-`);
-
-const StyledErrorMessage = styled.div(xw`
-    text-sm
-    text-red-600
-    my-0.5
-`);
+const StyledErrorMessage = ({ children }) => (
+  <div className="text-sm text-red-600 my-0.5">{children}</div>
+);
 
 const Listing = ({ listingData }) => {
   const [listing, setListing] = useState(listingData);
@@ -87,7 +28,7 @@ const Listing = ({ listingData }) => {
 
     const socket = io('/socket', {
       secure: false,
-      query: `r_var=${room}`,
+      query: { r_var: room },
     });
 
     socket.emit('join');
@@ -104,7 +45,9 @@ const Listing = ({ listingData }) => {
       setListing(data);
     });
 
-    return () => socket.emit('unsubscribe', room);
+    return () => {
+      socket.emit('unsubscribe', room);
+    };
   }, []);
 
   const onSubmit = async (body) => {
@@ -153,8 +96,8 @@ const Listing = ({ listingData }) => {
         <Breadcrumb link="/listings" name="Browse Listings" />
         <Breadcrumb link="/listings" name={listing.title} />
       </Breadcrumbs>
-      <StyledListing>
-        <StyledTextContent>
+      <div className="flex flex-wrap -mx-8">
+        <div className="lg:w-1/2 px-8 lg:mt-0 w-full order-2 lg:order-none">
           <section className="py-3 mb-3">
             <h3 className="text-3xl leading-tight font-semibold font-heading">
               {listing.title}
@@ -163,30 +106,30 @@ const Listing = ({ listingData }) => {
               {listing.description}
             </p>
           </section>
-          <StyledTable>
+          <table className="w-full mb-6">
             <tbody>
-              <StyledTableRow>
-                <StyledTableRowName>Price</StyledTableRowName>
-                <StyledTableRowValue>
+              <tr className="border-t">
+                <td className="py-3 font-medium text-gray-700">Price</td>
+                <td className="text-right max-w-2xl text-gray-500">
                   {centsToDollars(listing.currentPrice)}
-                </StyledTableRowValue>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableRowName>Seller</StyledTableRowName>
-                <Link href={`/profile/${listing.user.name}`}>
-                  <StyledAnchorTableRowValue>
+                </td>
+              </tr>
+              <tr className="border-t">
+                <td className="py-3 font-medium text-gray-700">Seller</td>
+                <Link href={`/profile/${listing.user.name}`} legacyBehavior>
+                  <td className="text-right max-w-2xl hover:underline cursor-pointer text-gray-500">
                     {listing.user.name}
-                  </StyledAnchorTableRowValue>
+                  </td>
                 </Link>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableRowName>Time Left</StyledTableRowName>
-                <StyledTableRowValue>
+              </tr>
+              <tr className="border-t">
+                <td className="py-3 font-medium text-gray-700">Time Left</td>
+                <td className="text-right max-w-2xl text-gray-500">
                   <Countdown expiresAt={listing.expiresAt} />
-                </StyledTableRowValue>
-              </StyledTableRow>
+                </td>
+              </tr>
             </tbody>
-          </StyledTable>
+          </table>
           <Formik
             initialValues={{
               amount: '',
@@ -217,11 +160,11 @@ const Listing = ({ listingData }) => {
               <ErrorMessage component={StyledErrorMessage} name="amount" />
             </Form>
           </Formik>
-        </StyledTextContent>
-        <StyledImgContainer>
-          <StyledImg src={listing.largeImage} alt="Product Image" />
-        </StyledImgContainer>
-      </StyledListing>
+        </div>
+        <div className="lg:w-1/2 px-8">
+          <img className="mb-4 rounded shadow" src={listing.largeImage} alt="Product Image" />
+        </div>
+      </div>
     </>
   );
 };

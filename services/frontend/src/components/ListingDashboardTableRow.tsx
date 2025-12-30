@@ -7,10 +7,11 @@ const ListingDashboardTableRow = ({ listing, onDelete }) => {
   return (
     <tr>
       <td className="px-6 py-4 whitespace-nowrap">
-        <Link href={`/listings/${listing.slug}`}>
-          <a className="hover:underline text-sm text-gray-900">
-            {listing.title}
-          </a>
+        <Link
+          href={`/listings/${listing.slug}`}
+          className="hover:underline text-sm text-gray-900"
+        >
+          {listing.title}
         </Link>
         <div className="text-sm text-gray-500">
           Time Left: <Countdown expiresAt={listing.expiresAt} />

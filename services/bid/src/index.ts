@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { app } from './app';
 import { ListingCreatedListener } from './events/listeners/listing-created-listener';
 import { ListingDeletedListener } from './events/listeners/listing-deleted-listener';
@@ -45,10 +46,11 @@ import { natsWrapper } from './nats-wrapper';
     process.on('SIGTERM', () => natsWrapper.client.close());
 
     await db.authenticate();
-    await db.sync({ force: true });
-    console.log('Conneted to MySQL');
+    await db.sync();
+    console.log('Connected to MySQL');
 
-    app.listen(3000, () => console.log('Listening on port 3000!'));
+    const port = process.env.PORT || 4002;
+    app.listen(port, () => console.log(`Listening on port ${port}!`));
 
     new ListingCreatedListener(natsWrapper.client).listen();
     new ListingDeletedListener(natsWrapper.client).listen();

@@ -2,23 +2,20 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import '../styles/globals.css';
 
-import styled from '@emotion/styled';
-import type { AppProps } from 'next/app';
+
+import type { AppProps, AppContext as NextAppContext } from 'next/app';
 import React, { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
-import xw from 'xwind/macro';
+
 
 import buildClient from '../api/base-client';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import AppContext from '../context/app-context';
 
-const StyledMyApp = styled.div(xw`
-    flex 
-    flex-col 
-    h-screen 
-    justify-between
-`);
+const StyledMyApp = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex flex-col h-screen justify-between">{children}</div>
+);
 
 interface IProps extends AppProps {
   currentUser: any;
@@ -59,19 +56,28 @@ const MyApp = ({ Component, pageProps, currentUser }: IProps) => {
   );
 };
 
-MyApp.getInitialProps = async (appContext) => {
+MyApp.getInitialProps = async (appContext: NextAppContext) => {
   const client = buildClient(appContext.ctx);
-  const { data } = await client.get('/api/auth/current-user');
+
+  let currentUser = null;
+  try {
+    const { data } = await client.get('/api/auth/current-user');
+    currentUser = data.currentUser;
+  } catch (err) {
+    console.error('Error fetching current user:', err.message);
+  }
+
   let pageProps = {};
 
   if (appContext.Component.getInitialProps) {
     pageProps = await appContext.Component.getInitialProps(
       appContext.ctx,
-      client
+      client,
+      currentUser
     );
   }
 
-  return { ...data, pageProps };
+  return { currentUser, pageProps };
 };
 
 export default MyApp;

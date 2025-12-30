@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { app } from './app';
 import { UserCreatedListener } from './events/listeners/user-created-listener';
 import { db } from './models';
@@ -43,7 +44,7 @@ import { natsWrapper } from './nats-wrapper';
 
     await db.authenticate();
     await db.sync();
-    console.log('Conneted to MySQL');
+    console.log('Connected to MySQL');
 
     app.listen(3000, () => console.log('Listening on port 3000!'));
 

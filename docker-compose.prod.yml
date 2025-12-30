@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    expose:
+      - "80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - auth
+      - bid
+      - listings
+      - payments
+      - profile
+    restart: always
+
+  auth:
+    build: 
+      context: ./services/auth
+      dockerfile: Dockerfile
+    environment:
+      - AUTH_MYSQL_URI=${AUTH_MYSQL_URI}
+      - JWT_KEY=${JWT_KEY}
+      - NATS_URL=${NATS_URL}
+      - NATS_CLIENT_ID=${NATS_CLIENT_ID_AUTH}
+      - NATS_CLUSTER_ID=${NATS_CLUSTER_ID}
+    restart: always
+
+  bid:
+    build:
+      context: ./services/bid
+      dockerfile: Dockerfile
+    environment:
+      - BID_MYSQL_URI=${BID_MYSQL_URI}
+      - JWT_KEY=${JWT_KEY}
+      - NATS_URL=${NATS_URL}
+      - NATS_CLIENT_ID=${NATS_CLIENT_ID_BID}
+      - NATS_CLUSTER_ID=${NATS_CLUSTER_ID}
+    restart: always
+
+  listings:
+    build:
+      context: ./services/listings
+      dockerfile: Dockerfile
+    environment:
+      - LISTINGS_MYSQL_URI=${LISTINGS_MYSQL_URI}
+      - JWT_KEY=${JWT_KEY}
+      - NATS_URL=${NATS_URL}
+      - NATS_CLIENT_ID=${NATS_CLIENT_ID_LISTINGS}
+      - NATS_CLUSTER_ID=${NATS_CLUSTER_ID}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    restart: always
+
+  payments:
+    build:
+      context: ./services/payments
+      dockerfile: Dockerfile
+    environment:
+      - PAYMENTS_MYSQL_URI=${PAYMENTS_MYSQL_URI}
+      - JWT_KEY=${JWT_KEY}
+      - NATS_URL=${NATS_URL}
+      - NATS_CLIENT_ID=${NATS_CLIENT_ID_PAYMENTS}
+      - NATS_CLUSTER_ID=${NATS_CLUSTER_ID}
+      - STRIPE_KEY=${STRIPE_KEY}
+    restart: always
+
+  profile:
+    build:
+      context: ./services/profile
+      dockerfile: Dockerfile
+    environment:
+      - PROFILE_MYSQL_URI=${PROFILE_MYSQL_URI}
+      - JWT_KEY=${JWT_KEY}
+      - NATS_URL=${NATS_URL}
+      - NATS_CLIENT_ID=${NATS_CLIENT_ID_PROFILE}
+      - NATS_CLUSTER_ID=${NATS_CLUSTER_ID}
+    restart: always
